@@ -1,0 +1,25 @@
+{
+	"name": "@limbo-works/three-shader",
+	"type": "module",
+	"version": "0.0.1",
+	"main": "./nuxt.config.js",
+	"scripts": {
+		"dev": "nuxi prepare & nuxi dev .playground",
+		"build": "nuxi build .playground",
+		"generate": "nuxi generate .playground",
+		"preview": "nuxi preview .playground",
+		"prettier": "prettier \"**/*.{js,vue,md,yml,css,scss,json}\"",
+		"eslint": "eslint \"**/*.{js,vue}\"",
+		"lint": "yarn prettier --check . && yarn eslint --quiet .",
+		"lint:fix": "yarn prettier --write . && yarn eslint --fix --quiet .",
+		"test": "exit 0"
+	},
+	"devDependencies": {
+		"@limbo-works/lint-configs": "^1.0.2",
+		"@limbo-works/nuxt-core": "^2.1.0",
+		"nuxt": "^3.8"
+	},
+	"dependencies": {
+		"three": "^0.159.0"
+	}
+}
