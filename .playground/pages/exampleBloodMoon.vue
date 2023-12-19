@@ -3,7 +3,7 @@
 		<ThreeShader
 			class="p-example-fullscreen"
 			:fragment-shader="shader"
-			:pixel-ratio="0.05"
+			:pixel-ratio="0.2"
 			v-bind="{ width, height }"
 		/>
 	</div>
@@ -19,18 +19,20 @@ onMounted(() => (window.addEventListener('resize', onResize), onResize()));
 onBeforeUnmount(() => window.removeEventListener('resize', onResize));
 
 function onResize() {
-	width.value = window.innerWidth;
-	height.value = window.innerHeight;
+	width.value = window.innerHeight * 0.75;
+	height.value = window.innerHeight * 0.75;
 }
 </script>
 
 <style lang="postcss">
 .p-example-fullscreen > * {
 	position: fixed;
-	top: 0px;
-	left: 0px;
-	width: 100dvw;
-	height: 100dvh;
+	top: 50%;
+	left: 50%;
+	translate: -50% -50%;
+
+	width: 75dvh;
+	height: 75dvh;
 	z-index: -1;
 }
 </style>

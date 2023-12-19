@@ -3,7 +3,7 @@
 		<div class="c-app__navigation">
 			<NuxtLink to="/exampleDefault">Default Example</NuxtLink>
 			<NuxtLink to="/exampleTexture">Texture Example</NuxtLink>
-			<NuxtLink to="/exampleFullscreen">Fullscreen Example</NuxtLink>
+			<NuxtLink to="/exampleBloodMoon">Blood Moon Example</NuxtLink>
 		</div>
 
 		<main>

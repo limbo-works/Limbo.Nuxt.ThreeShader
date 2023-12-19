@@ -1,5 +1,6 @@
 varying vec2 v_uv;
-uniform vec2 u_resolution;
+uniform vec2 u_canvasResolution;
+uniform float u_pixelRatio;
 uniform float u_time;
 
 vec3 random3(vec3 c) {
@@ -59,6 +60,20 @@ float simplex3d(vec3 p) {
 }
 
 void main() {
-    float noise = simplex3d(vec3(gl_FragCoord.xy * .03, u_time * 0.5));
-    gl_FragColor = vec4(1.0 - noise, 0.0, noise, round(noise * 100.0));
+    vec2 coords = (gl_FragCoord.xy / u_pixelRatio) * 0.03;
+
+    float noise = 
+        simplex3d(vec3(coords * .03, u_time * 0.1 * 1.0)) * 1.0 +
+        simplex3d(vec3(coords * .1, u_time * 0.05 * 2.0)) * .2 +
+        simplex3d(vec3(coords * .3, u_time * 0.1 * 3.0)) * .15 +
+        simplex3d(vec3(coords * .6, u_time * 0.1 * 4.0)) * .075;
+
+
+    float dx = abs(v_uv.x - .5) * 2.0;
+    float dy = abs(v_uv.y - .5) * 2.0;
+    float d = sqrt(dx * dx + dy * dy);
+
+    float cutoff = round((noise + .1) * 50.0 * (1.0 - min(d * d * d * d * d * d * d * d, 1.0)));
+    if (cutoff > 0.5) { gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); }
+    else if (d < 1.0) { gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); }
 }
