@@ -7,7 +7,7 @@
 			v-bind="{ width, height }"
 		/>
 
-		Yooo
+		Yooo, sup
 	</div>
 </template>
 
