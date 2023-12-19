@@ -6,8 +6,6 @@
 			:pixel-ratio="0.2"
 			v-bind="{ width, height }"
 		/>
-
-		Yooo, sup
 	</div>
 </template>
 
