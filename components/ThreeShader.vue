@@ -104,11 +104,11 @@ export default {
 		},
 
 		/**
-		 * Path to texture.
+		 * Paths to multiple textures.
 		 * Will not default to anything.
 		 */
-		texture: {
-			type: String,
+		textures: {
+			type: Array,
 			required: false,
 		},
 
@@ -165,7 +165,8 @@ export default {
 				u_time: { value: 0 },
 				u_pixelRatio: { value: 1 },
 				u_canvasResolution: { value: new THREE.Vector2() },
-				u_textureResolution: { value: new THREE.Vector2() },
+				u_textureResolutions: { value: [] },
+
 				...this.appendedUniforms,
 			},
 
@@ -264,9 +265,21 @@ export default {
 
 	methods: {
 		async initialise() {
-			const texConfig = this.texture && (await this.fetchTexture());
-			this.widthActual = this.width ?? texConfig?.width ?? 256;
-			this.heightActual = this.height ?? texConfig?.height ?? 256;
+			const textureConfigs =
+				this.textures && (await this.fetchTextures());
+
+			const textureMaxWidth = textureConfigs.reduce(
+				(acc, { width }) => Math.max(acc, width),
+				0
+			);
+
+			const textureMaxHeight = textureConfigs.reduce(
+				(acc, { height }) => Math.max(acc, height),
+				0
+			);
+
+			this.widthActual = this.width ?? textureMaxWidth ?? 256;
+			this.heightActual = this.height ?? textureMaxHeight ?? 256;
 
 			let width = Math.max(this.widthActual, 128);
 			let height = Math.max(this.heightActual, 128);
@@ -321,9 +334,6 @@ export default {
 
 			this.uniforms.u_canvasResolution.value.x = width;
 			this.uniforms.u_canvasResolution.value.y = height;
-
-			this.uniforms.u_textureResolution.value.x = texConfig?.width;
-			this.uniforms.u_textureResolution.value.y = texConfig?.height;
 			this.uniforms.u_pixelRatio.value = pixelRatio;
 
 			this.isLoaded = true;
@@ -339,20 +349,32 @@ export default {
 			}
 		},
 
-		async fetchTexture() {
-			return new Promise((resolve) => {
-				new THREE.TextureLoader().load(this.texture, (texture) => {
-					this.uniforms['u_texture'] = {
-						type: 'sampler2D',
-						value: texture,
-					};
+		async fetchTextures() {
+			const promises = this.textures?.map((texturePath) => {
+				return new Promise((resolve) => {
+					new THREE.TextureLoader().load(texturePath, (texture) => {
+						this.uniforms['u_textures'] ??= { value: [] };
+						this.uniforms['u_textures'].value.push(texture);
 
-					resolve({
-						width: texture.image?.width,
-						height: texture.image?.height,
+						this.uniforms['u_textureResolutions'] ??= { value: [] };
+						this.uniforms['u_textureResolutions'].value.push(
+							new THREE.Vector2(
+								texture.image?.width,
+								texture.image?.height
+							)
+						);
+
+						resolve({
+							width: texture.image?.width,
+							height: texture.image?.height,
+						});
 					});
 				});
 			});
+
+			return (await Promise.allSettled(promises)).map(
+				(result) => result?.value
+			);
 		},
 
 		onIntersection([{ isIntersecting }]) {
