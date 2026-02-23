@@ -73,7 +73,9 @@ void main() {
     float dy = abs(v_uv.y - .5) * 2.0;
     float d = sqrt(dx * dx + dy * dy);
 
-    float cutoff = round((noise + .1) * 50.0 * (1.0 - min(d * d * d * d * d * d * d * d, 1.0)));
-    if (cutoff > 0.5) { gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); }
-    else if (d < 1.0) { gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); }
+    gl_FragColor = vec4((noise + .1) * 50.0 * (1.0 - min(d * d * d * d * d * d * d * d, 1.0)), 0.0, 0.0, 1.0);
+
+    // float cutoff = round((noise + .1) * 50.0 * (1.0 - min(d * d * d * d * d * d * d * d, 1.0)));
+    // if (cutoff > 0.5) { gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); }
+    // else if (d < 1.0) { gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); }
 }
